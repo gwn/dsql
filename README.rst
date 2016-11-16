@@ -1,4 +1,4 @@
-## Dead simple RDBMS handling library
+**Dead simple RDBMS handling library**
 
 https://github.com/gwn/dsql
 
@@ -8,7 +8,7 @@ supports very basic SQL generation and result handling.
 Because I hate ORMs.
 
 This library creates a simple manager object from a database connection, that
-exposes the following API:
+exposes the following API::
 
     - select
     - insert
@@ -19,19 +19,20 @@ exposes the following API:
     - connection
     - cursor
 
-### Philosophy
+**Philosophy**
 
-### Installation
+**Installation**
 
-  pip install dsql
+::
+    pip install dsql
 
-### Usage
+**Usage**
 
 Any database connection object that implements the Python DB API 2.0 (PEP 0249)
 is supported. Also, the database connection must be configured to return a
 DictCursor when requested for a cursor.
 
-Example Usage (mysql):
+Example Usage (mysql)::
 
     import MySQLdb
     import MySQLdb.cursors
@@ -68,7 +69,7 @@ Example Usage (mysql):
         'id =': 777,
     })
 
-Example Usage (postgres):
+Example Usage (postgres)::
 
     import psycopg2
     import psycopg2.extras
