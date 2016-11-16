@@ -8,16 +8,16 @@ supports very basic SQL generation and result handling.
 Because I hate ORMs.
 
 This library creates a simple manager object from a database connection, that
-exposes the following API::
+exposes the following API:
 
-    - select
-    - insert
-    - update
-    - delete
-    - commit
-    - rollback
-    - connection
-    - cursor
+- select
+- insert
+- update
+- delete
+- commit
+- rollback
+- connection
+- cursor
 
 **Philosophy**
 
