@@ -5,7 +5,7 @@ Because I hate ORMs.
 
 This library creates a simple manager object from a database connection.
 The database connection must be configured to return a DictCursor when
-requested for a cursor.
+a cursor is requested.
 
 Manager API:
     - select

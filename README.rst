@@ -31,7 +31,7 @@ exposes the following API:
 
 Any database connection object that implements the Python DB API 2.0 (PEP 0249)
 is supported. Also, the database connection must be configured to return a
-DictCursor when requested for a cursor.
+DictCursor when a cursor is requested.
 
 Example Usage (mysql)::
 
