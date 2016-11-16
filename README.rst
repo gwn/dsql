@@ -24,6 +24,7 @@ exposes the following API::
 **Installation**
 
 ::
+
     pip install dsql
 
 **Usage**
