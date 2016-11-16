@@ -1,4 +1,4 @@
 /dist
 /dsql.egg-info
-.sw[po]
-.pyc
+*.sw[po]
+*.pyc
