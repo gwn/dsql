@@ -163,9 +163,8 @@ def get_query_builder(operation):
         'raw': build_raw,
         'select': build_select,
         'get': build_select,
-        'upsert': build_upsert,
-        'insert': build_upsert,
-        'update': build_upsert,
+        'insert': build_insert,
+        'update': build_update,
         'delete': build_delete,
     }[operation]
 
@@ -194,21 +193,22 @@ def build_select(tablename, fieldlist, where=[], groups=[], having={},
     return querytpl, wherevalues + havingvalues
 
 
-def build_upsert(tablename, data, where=[], order=[], limit=None):
-    upserttpl, upsertvalues = \
-        build_update_expr(tablename, data) \
-            if where else build_insert_expr(tablename, data)
+def build_insert(tablename, data):
+    return build_insert_expr(tablename, data)
 
+
+def build_update(tablename, data, where=[], order=[], limit=None):
+    updatetpl, updatevalues = build_update_expr(tablename, data)
     wheretpl, wherevalues = build_where_expr(where)
 
     querytpl = ' '.join([
-        upserttpl,
+        updatetpl,
         wheretpl,
         build_order_expr(order),
         build_limit_expr(limit),
     ])
 
-    return querytpl, upsertvalues + wherevalues
+    return querytpl, updatevalues + wherevalues
 
 
 def build_delete(tablename, where=[], order=[], limit=None):
