@@ -14,6 +14,7 @@ exposes the following API:
 - insert
 - update
 - delete
+- raw
 - commit
 - rollback
 - connection

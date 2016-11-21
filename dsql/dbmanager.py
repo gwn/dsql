@@ -12,6 +12,7 @@ Manager API:
     - insert
     - update
     - delete
+    - raw
     - commit
     - rollback
     - connection
@@ -72,6 +73,7 @@ def make(dbconn):
     - insert
     - update
     - delete
+    - raw
     - commit
     - rollback
     - connection
