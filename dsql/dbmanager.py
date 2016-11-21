@@ -94,6 +94,7 @@ def make(dbconn):
         'insert': partial(query, 'insert', dbcursor),
         'update': partial(query, 'update', dbcursor),
         'delete': partial(query, 'delete', dbcursor),
+        'raw': partial(query, 'raw', dbcursor),
         'commit': lambda: dbconn.commit(),
         'rollback': lambda: dbconn.rollback(),
     }
@@ -129,10 +130,10 @@ def query(operation, dbcursor, *args, **kw):
 
     dbcursor.execute(querytpl, params)
 
-    if operation in ('insert', 'update', 'upsert', 'delete') and commit:
+    if commit:
         dbcursor.connection.commit()
 
-    if operation in ('select', 'get'):
+    if dbcursor.description:
         itemiter = iter(dbcursor)
         first_record = itemiter.next()
 
@@ -150,15 +151,16 @@ def query(operation, dbcursor, *args, **kw):
         else:
             return itemiter
 
-    elif operation in ['update', 'upsert', 'delete']:
-        return dbcursor.rowcount
-
-    elif operation == 'insert':
+    elif dbcursor.lastrowid:
         return dbcursor.lastrowid
+
+    else:
+        return dbcursor.rowcount
 
 
 def get_query_builder(operation):
     return {
+        'raw': build_raw,
         'select': build_select,
         'get': build_select,
         'upsert': build_upsert,
@@ -166,6 +168,10 @@ def get_query_builder(operation):
         'update': build_upsert,
         'delete': build_delete,
     }[operation]
+
+
+def build_raw(querytpl, params=[]):
+    return querytpl, params
 
 
 def build_select(tablename, fieldlist, where=[], groups=[], having={},
