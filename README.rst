@@ -43,7 +43,7 @@ Example Usage (mysql)::
     conn = MySQLdb.connect(host='localhost', user='root', db='lorem',
                            cursorclass=MySQLdb.cursors.DictCursor)
 
-    db = dsql.make(conn)
+    db = dsql.make(conn, dialect='mysql')
 
     itemiter = db.select('products', 'id,name,description')
     item = itemiter.next()
