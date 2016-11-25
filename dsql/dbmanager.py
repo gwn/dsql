@@ -148,6 +148,9 @@ def make(dbconn, dialect='standard'):
 
             itemiter = chain([first_record], itemiter)
 
+            if asdict and not isinstance(first_record, dict):
+                itemiter = (dict(item.items()) for item in itemiter)
+
             if not asdict:
                 Result = namedtuple('dbrecord', first_record.keys())
                 itemiter = (Result(**item) for item in itemiter)
