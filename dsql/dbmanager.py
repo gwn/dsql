@@ -279,7 +279,7 @@ def make(dbconn, dialect='standard'):
 
 
     def build_delete_expr(tablename):
-        return 'DELETE FROM `%s`' % quote_identifier(tablename)
+        return 'DELETE FROM %s' % quote_identifier(tablename)
 
 
     def build_where_expr(conditions=[], keyword='WHERE'):
