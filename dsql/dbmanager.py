@@ -144,10 +144,10 @@ def make(dbconn, dialect='standard'):
 
         if dbcursor.description:
             itemiter = iter(dbcursor)
-            first_record = itemiter.next()
+            first_record = next(itemiter, None)
 
             if not first_record:
-                return iter([])
+                return None if operation == 'get' else iter([])
 
             itemiter = chain([first_record], itemiter)
 
