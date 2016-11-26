@@ -85,7 +85,7 @@ def make(dbconn, dialect='standard'):
         standard ones.
 
     :param dialect:
-        "standard" | "mysql" | "mssql"
+        "standard" | "mysql" | "mssql" | "postgresql"
     """
 
     def make():
@@ -138,6 +138,9 @@ def make(dbconn, dialect='standard'):
 
         if commit:
             dbcursor.connection.commit()
+
+        if operation == 'insert' and dialect == 'postgresql':
+            return dbcursor.fetchone()[0]
 
         if dbcursor.description:
             itemiter = iter(dbcursor)
@@ -203,7 +206,12 @@ def make(dbconn, dialect='standard'):
 
 
     def build_insert(tablename, data):
-        return build_insert_expr(tablename, data)
+        inserttpl, insertvalues = build_insert_expr(tablename, data)
+
+        if dialect == 'postgresql':
+            inserttpl += ' returning id'
+
+        return inserttpl, insertvalues
 
 
     def build_update(tablename, data, where=[], order=[], limit=None):
@@ -235,6 +243,7 @@ def make(dbconn, dialect='standard'):
 
     def quote_identifier(identifier):
         templates = {'standard': '"%s"',
+                     'postgresql': '"%s"',
                      'mysql': '`%s`',
                      'mssql': '[%s]'}
 
