@@ -304,18 +304,27 @@ def make(dbconn, dialect='standard'):
         if isinstance(conditions, dict):
             conditions = [conditions]
 
-        for cond in conditions:
-            for predicate, value in cond.items():
-                fieldname, operator = predicate.split(' ')
-
         conditions = [OrderedDict(condition) for condition in conditions]
 
-        tpl = ' OR '.join('(%s)' % ' AND '.join('%s %s %%s' % (quote_identifier(fieldname), validate_operator(operator))
-                                                   for fieldname, operator in [predicate.split(' ')
-                                                                                  for predicate in cond.keys()])
-                             for cond in conditions)
+        def build_single_comparation(predicate, value):
+            if ' ' in predicate:
+                field, op = predicate.split(' ')
+            else:
+                field, op = predicate, '='
 
-        values = list(chain(*(condition.values() for condition in conditions)))
+            placeholders = '%s'
+
+            return '%s %s %s' % (quote_identifier(field),
+                                 validate_operator(op),
+                                 placeholders)
+
+        def build_comparation_group(cond):
+            return ' AND '.join(build_single_comparation(predicate, value)
+                                   for predicate, value in cond.items())
+
+        tpl = ' OR '.join(['(%s)' % build_comparation_group(cond) for cond in conditions])
+
+        values = list(chain(*(cond.values() for cond in conditions)))
 
         return '%s %s' % (keyword, tpl), values
 
