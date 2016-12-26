@@ -1,3 +1,1 @@
-Field name selection mechanism is susceptible to SQL injection!
-Refer to the "agnostic" project
-Mention dsql's lightweight nature, with no dependencies
+what about case sensitivity in "like", "in", "not like" and "not in"?

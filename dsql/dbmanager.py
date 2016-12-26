@@ -308,11 +308,11 @@ def make(dbconn, dialect='standard'):
 
         def build_single_comparation(predicate, value):
             if ' ' in predicate:
-                field, op = predicate.split(' ')
+                field, op = predicate.split(' ', 1)
             else:
                 field, op = predicate, '='
 
-            if op == 'in' and isinstance(value, list):
+            if op in ['in', 'not in'] and isinstance(value, list):
                 placeholders = '(' + ','.join(['%s'] * len(value)) + ')'
             else:
                 placeholders = '%s'
@@ -345,7 +345,7 @@ def make(dbconn, dialect='standard'):
 
     def validate_operator(op):
         supported_operators = (
-            '=', '>', '<', '!=', '<=', '>=', 'in',
+            '=', '>', '<', '!=', '<=', '>=', 'in', 'not in', 'like', 'not like'
         )
 
         if op not in supported_operators:
