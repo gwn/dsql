@@ -140,7 +140,7 @@ def make(dbconn, dialect='standard'):
             dbcursor.connection.commit()
 
         if operation == 'insert' and dialect == 'postgresql':
-            return dbcursor.fetchone()[0]
+            return (rec[0] for rec in dbcursor)
 
         if dbcursor.description:
             itemiter = iter(dbcursor)
@@ -164,7 +164,14 @@ def make(dbconn, dialect='standard'):
                 return itemiter
 
         elif dbcursor.lastrowid:
-            return dbcursor.lastrowid
+            total_items = 1 if isinstance(args[1], dict) else len(args[1])
+
+            if dialect == 'mysql':
+                return iter(xrange(dbcursor.lastrowid,
+                                   dbcursor.lastrowid + total_items))
+            else:
+                return iter(xrange(dbcursor.lastrowid - total_items,
+                                   dbcursor.lastrowid))
 
         else:
             return dbcursor.rowcount
