@@ -33,7 +33,7 @@ Example Usage:
 
     itemiter = db.select('products', 'id,name,description')
     item = itemiter.next()
-    print item.name
+    print item['name']
 
     last_insert_id = db.insert('products', {
         'name': 'falan',
@@ -117,16 +117,12 @@ def make(dbconn, dialect='standard'):
         """
         debug = False
         commit = True
-        asdict = False
 
         if kw.has_key('debug'):
             debug = kw.pop('debug')
 
         if kw.has_key('commit'):
             commit = kw.pop('commit')
-
-        if kw.has_key('asdict'):
-            asdict = kw.pop('asdict')
 
         querytpl, params = get_query_builder(operation)(*args, **kw)
 
@@ -151,12 +147,10 @@ def make(dbconn, dialect='standard'):
 
             itemiter = chain([first_record], itemiter)
 
-            if asdict and not isinstance(first_record, dict):
+            # Fix for psycopg2.extras.DictCursor, which does not
+            # return a dict, but a dict-like object
+            if not isinstance(first_record, dict):
                 itemiter = (dict(item.items()) for item in itemiter)
-
-            if not asdict:
-                Result = namedtuple('dbrecord', first_record.keys())
-                itemiter = (Result(**item) for item in itemiter)
 
             if operation == 'get':
                 return next(itemiter, None)
