@@ -101,8 +101,8 @@ def make(dbconn, dialect='standard'):
             'update': partial(query, 'update', dbcursor),
             'delete': partial(query, 'delete', dbcursor),
             'raw': partial(query, 'raw', dbcursor),
-            'commit': lambda: dbconn.commit(),
-            'rollback': lambda: dbconn.rollback(),
+            'commit': dbconn.commit,
+            'rollback': dbconn.rollback,
         }
 
         return namedtuple('dbmanager', dbmanagerdict.keys())(**dbmanagerdict)
