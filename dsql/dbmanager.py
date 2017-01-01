@@ -89,18 +89,15 @@ def make(dbconn, dialect='standard'):
     """
 
     def make():
-        dbcursor = dbconn.cursor()
-
         dbmanagerdict = {
             'connection': dbconn,
-            'cursor': dbcursor,
-            'select': partial(query, 'select', dbcursor),
-            'get': partial(query, 'get', dbcursor),
-            'upsert': partial(query, 'upsert', dbcursor),
-            'insert': partial(query, 'insert', dbcursor),
-            'update': partial(query, 'update', dbcursor),
-            'delete': partial(query, 'delete', dbcursor),
-            'raw': partial(query, 'raw', dbcursor),
+            'select': partial(query, 'select'),
+            'get': partial(query, 'get'),
+            'upsert': partial(query, 'upsert'),
+            'insert': partial(query, 'insert'),
+            'update': partial(query, 'update'),
+            'delete': partial(query, 'delete'),
+            'raw': partial(query, 'raw'),
             'commit': dbconn.commit,
             'rollback': dbconn.rollback,
         }
@@ -108,7 +105,7 @@ def make(dbconn, dialect='standard'):
         return namedtuple('dbmanager', dbmanagerdict.keys())(**dbmanagerdict)
 
 
-    def query(operation, dbcursor, *args, **kw):
+    def query(operation, *args, **kw):
         """
         :param operation: 'select' | 'upsert' | 'delete'
         :param dbcur: db cursor object
@@ -123,6 +120,8 @@ def make(dbconn, dialect='standard'):
 
         if kw.has_key('commit'):
             commit = kw.pop('commit')
+
+        dbcursor = dbconn.cursor()
 
         querytpl, params = get_query_builder(operation)(*args, **kw)
 
