@@ -1,63 +1,3 @@
-"""
-Dead simple RDBMS handling library
-
-Because I hate ORMs.
-
-This library creates a simple manager object from a database connection.
-The database connection must be configured to return a DictCursor when
-a cursor is requested.
-
-Manager API:
-    - select
-    - insert
-    - update
-    - delete
-    - raw
-    - commit
-    - rollback
-    - connection
-    - cursor
-
-Example Usage:
-
-    import MySQLdb
-    import MySQLdb.cursors
-
-    conn = MySQLdb.connect(host='localhost', user='root', db='lorem',
-                           cursorclass=MySQLdb.cursors.DictCursor)
-
-    # You can always pass a psycopg2 connection object as well, or any
-    # connection object that implements the Python DB API 2.0 (PEP 0249)
-
-    db = make_db_manager(conn, dialect='mysql')
-
-    itemiter = db.select('products', 'id,name,description')
-    item = itemiter.next()
-    print item['name']
-
-    last_insert_id = db.insert('products', {
-        'name': 'falan',
-        'description': 'harika bir urun!!',
-    })
-
-    last_insert_id = db.insert('products', {
-        'name': 'falan',
-        'description': 'harika bir urun!!',
-    }, commit=False)
-    db.commit()
-
-    affected_rowcount = db.update('products', {
-        'name': 'lorem ipsum',
-    },
-    {
-        'id =': 888,
-    })
-
-    affected_rowcount = db.delete('products', {
-        'id =': 777,
-    })
-"""
-
 from sys import stderr
 from collections import namedtuple, OrderedDict
 from functools import partial
@@ -70,6 +10,7 @@ def make(dbconn, dialect='standard'):
     following API:
 
     - select
+    - get
     - insert
     - update
     - delete

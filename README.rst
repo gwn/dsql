@@ -22,9 +22,12 @@ exposes the following API:
 
 **Philosophy**
 
-**Installation**
+Coming soon. It will be something like that interactions with relational
+databases should be far more simpler that it currently is in the majority of
+applications, and how I don't like ORMs and complex migration systems and stuff
+like that.
 
-::
+**Installation**::
 
     pip install dsql
 
@@ -40,14 +43,16 @@ Example Usage (mysql)::
     import MySQLdb.cursors
     import dsql
 
+    # Create your connection object with a DictCursor as the cursor class:
     conn = MySQLdb.connect(host='localhost', user='root', db='lorem',
                            cursorclass=MySQLdb.cursors.DictCursor)
 
+    # Create the manager object with the dialect being `mysql`:
     db = dsql.make(conn, dialect='mysql')
 
     itemiter = db.select('products', 'id,name,description')
     item = itemiter.next()
-    print item.name
+    print item['name']
 
     last_insert_id = db.insert('products', {
         'name': 'falan',
@@ -77,13 +82,15 @@ Example Usage (postgres)::
     import psycopg2.extras
     import dsql
 
+    # Create your connection object with a DictCursor as the cursor factory:
     conn = psycopg2.connect(host='localhost', user='root', database='lorem',
                             cursor_factory=psycopg2.extras.DictCursor)
 
-    db = dsql.make(conn)
+    # Create the manager object with the dialect being `posgresql`:
+    db = dsql.make(conn, dialect='postgresql')
 
     itemiter = db.select('products', 'id,name,description')
     item = itemiter.next()
-    print item.name
+    print item['name']
 
     ...

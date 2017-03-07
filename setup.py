@@ -9,11 +9,11 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='dsql',
-    version='0.3.2',
+    version='0.3.3',
     description='Dead simple RDBMS handling lib',
     long_description=long_description,
     url='https://github.com/gwn/dsql',
-    author='Ege Avunc',
+    author='gwn',
     author_email='egeavunc@gmail.com',
     license='MIT',
     classifiers=[
