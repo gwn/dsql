@@ -57,11 +57,11 @@ def build_insert_stmt(tablename, recordlist, dialect='standard'):
     return insert_clause, insert_params
 
 
-def build_update_stmt(tablename, updates, where=[], orderby=[], limit=0,
+def build_update_stmt(tablename, recordpatch, where=[], orderby=[], limit=0,
                       offset=0, dialect='standard'):
     """ """
 
-    update_clause, update_params = build_update_clause(tablename, updates,
+    update_clause, update_params = build_update_clause(tablename, recordpatch,
                                                        dialect=dialect)
     where_clause, where_params = build_where_clause(where, dialect=dialect)
 
@@ -130,16 +130,16 @@ def build_insert_clause(tablename, recordlist, dialect='standard'):
     return tpl, params
 
 
-def build_update_clause(tablename, updates, dialect='standard'):
-    updates = OrderedDict(updates)
+def build_update_clause(tablename, recordpatch, dialect='standard'):
+    recordpatch = OrderedDict(recordpatch)
 
     tpl = 'UPDATE %s SET %s' % (
               quote_identifier(tablename, dialect=dialect),
               ', '.join('%s=%%s' % quote_identifier(fieldname, dialect=dialect)
-                            for fieldname in updates.keys())
+                            for fieldname in recordpatch.keys())
           )
 
-    return tpl, updates.values()
+    return tpl, recordpatch.values()
 
 
 def build_delete_clause(tablename, dialect='standard'):
