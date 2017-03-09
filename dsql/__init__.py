@@ -1,1 +1,2 @@
-from dbmanager import make
+from querybuilder import buildquery
+from manager import make
