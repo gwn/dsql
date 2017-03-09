@@ -23,14 +23,12 @@ def makemanager(conn, dialect='standard'):
         A object exposing the API mentioned above.
     """
 
-    query = partial(query, dialect=dialect)
-
     managerdict = {
-        'select': partial(query, 'select'),
-        'insert': partial(query, 'insert'),
-        'update': partial(query, 'update'),
-        'delete': partial(query, 'delete'),
-        'raw': partial(query, 'raw'),
+        'select': partial(query, 'select', conn=conn, dialect=dialect),
+        'insert': partial(query, 'insert', conn=conn, dialect=dialect),
+        'update': partial(query, 'update', conn=conn, dialect=dialect),
+        'delete': partial(query, 'delete', conn=conn, dialect=dialect),
+        'raw': partial(query, 'raw', conn=conn, dialect=dialect),
         'conn': conn,
     }
 
@@ -53,6 +51,8 @@ def query(operation, *args, **kw):
         Except that, the following keys (if exist) will be extracted for use of
         this function, and will not be relayed:
 
+        connection: connection object
+
         commit: bool
             Whether to commit the changes or not.
 
@@ -72,6 +72,7 @@ def query(operation, *args, **kw):
 
     dialect = kw.get('dialect', 'standard')
 
+    conn = kw.pop('conn')
     commit = kw.pop('commit', True)
     dry_run = kw.pop('dry_run', False)
     response_handler = kw.pop('response_handler', handle_response)
@@ -89,15 +90,15 @@ def query(operation, *args, **kw):
     if commit:
         conn.commit()
 
-    response_handler(cursor, dialect)
+    return response_handler(cursor, dialect)
 
 
 def handle_response(cursor, dialect):
-    if cursor.description:
-        handler = handle_select_response
-
-    elif cursor.lastrowid:
+    if cursor.lastrowid:
         handler = handle_insert_response
+
+    elif cursor.description:
+        handler = handle_select_response
 
     else:
         handler = handle_other_response
