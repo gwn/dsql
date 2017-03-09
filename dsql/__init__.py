@@ -1,2 +1,2 @@
 from querybuilder import buildquery
-from manager import make
+from manager import makemanager

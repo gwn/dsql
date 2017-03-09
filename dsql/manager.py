@@ -5,7 +5,7 @@ from itertools import chain
 from querybuilder import buildquery
 
 
-def make(conn, dialect='standard'):
+def makemanager(conn, dialect='standard'):
     """
     Create a database manager object with the following API:
 
