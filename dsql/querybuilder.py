@@ -24,7 +24,7 @@ def buildquery(operation, *args, **kw):
 
 
 def build_select_stmt(tablename, fieldlist=[], where=[], groupby=[], having=[],
-                      orderby=[], limit=0, dialect='standard'):
+                      orderby=[], limit=0, offset=0, dialect='standard'):
     """ """
 
     where_clause, where_params = build_where_clause(where, dialect=dialect)
@@ -37,7 +37,7 @@ def build_select_stmt(tablename, fieldlist=[], where=[], groupby=[], having=[],
         build_groupby_clause(groupby, dialect=dialect),
         having_clause,
         build_orderby_clause(orderby, dialect=dialect),
-        build_limit_clause(limit, dialect=dialect),
+        build_limit_clause(limit, offset, dialect=dialect),
     ])
 
     params = where_params + having_params
@@ -58,7 +58,7 @@ def build_insert_stmt(tablename, recordlist, dialect='standard'):
 
 
 def build_update_stmt(tablename, updates, where=[], orderby=[], limit=0,
-                      dialect='standard'):
+                      offset=0, dialect='standard'):
     """ """
 
     update_clause, update_params = build_update_clause(tablename, updates,
@@ -69,7 +69,7 @@ def build_update_stmt(tablename, updates, where=[], orderby=[], limit=0,
         update_clause,
         where_clause,
         build_orderby_clause(orderby, dialect=dialect),
-        build_limit_clause(limit, dialect=dialect),
+        build_limit_clause(limit, offset, dialect=dialect),
     ])
 
     params = update_params + where_params
@@ -236,11 +236,16 @@ def build_orderby_clause(orderlist=[], dialect='standard'):
     return 'ORDER BY %s' % ', '.join(subclauses)
 
 
-def build_limit_clause(limit=0, dialect='standard'):
+def build_limit_clause(limit=0, offset=0, dialect='standard'):
     if not limit:
         return ''
 
-    return 'LIMIT %s' % limit
+    if dialect == 'postgresql':
+        clausetpl = 'OFFSET %s LIMIT %s'
+    else:
+        clausetpl = 'LIMIT %s, %s'
+
+    return clausetpl % (offset, limit)
 
 
 def quote_identifier(identifier, dialect='standard'):
